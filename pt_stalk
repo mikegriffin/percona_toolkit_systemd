@@ -1,0 +1,27 @@
+# cat /mnt/data/pt_stalk/pt_stalk_qps_tr.conf
+--function=/mnt/data/scripts/pt_stalk_trigger_qps_tr.sh
+--variable=qps_tr
+--threshold=0
+--cycles=5
+--sleep=1800
+--dest=/mnt/data/pt_stalk/qps_tr/
+--pid=/mnt/data/pt_stalk/pt_stalk_qps_tr.pid
+--retention-time=4
+
+# cat /etc/systemd/system/pt_stalk_qps_tr.service
+[Unit]
+Description=pt_stalk_qps_tr
+Requires=mysql.service
+[Service]
+Type=simple
+ExecStart=/usr/bin/pt-stalk --config /mnt/data/pt_stalk/pt_stalk_qps_tr.conf
+User=root
+Group=root
+Restart=on-failure
+RestartSec=10s
+[Install]
+WantedBy=multi-user.target
+
+# systemctl daemon-reload
+# systemctl enable pt_stalk_qps_tr
+# systemctl start pt_stalk_qps_tr
