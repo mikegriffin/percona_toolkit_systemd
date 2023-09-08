@@ -1,0 +1,23 @@
+# cat /etc/systemd/system/ptdeadlock.service
+[Unit]
+Description=pt-deadlock-logger
+After=syslog.target mysqld.service
+Requires=mysqld.service
+
+[Service]
+Type=forking
+ExecStart=/bin/pt-deadlock-logger --daemonize --pid=/var/run/ptdeadlock.pid --interval=15 --defaults-file=/root/.my.cnf --log=/var/log/ptdeadlock.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+
+# cat /etc/logrotate.d/ptdeadlock
+/var/log/ptdeadlock.log {
+    rotate 4
+    weekly
+    compress
+    missingok
+    create root adm
+}
